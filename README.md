@@ -1,4 +1,5 @@
 # mlsec-scan
+![mlsec-scan architecture](docs/mlsec-scan-schema.png)
 
 Security scanner for machine learning models.
 
