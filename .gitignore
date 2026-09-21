@@ -1,0 +1,42 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+build/
+dist/
+
+# Virtualenv
+venv*/
+.venv/
+env/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# ML (large files)
+*.ckpt
+*.pth
+*.onnx
+*.h5
+*.pt
+*.safetensors
+
+# Reports (mlsec-scan output)
+reports/
+
+# Lightning / Anomalib служебные файлы
+results/
+*.ckpt/
+*.pdf
+!docs/**/*.pdf
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+Thumbs.db
+.DS_Store

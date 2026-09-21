@@ -1,0 +1,65 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "mlsec-scan"
+version = "0.1.0"
+description = "Security scanner for machine learning models"
+readme = "README.md"
+requires-python = ">=3.11"
+license = { text = "MIT" }
+authors = [
+    { name = "Maksim Nagaytsev", email = "vaks911@example.com" },
+]
+keywords = ["mlsecops", "security", "adversarial", "poisoning", "ai-security"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "Topic :: Security",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+    "Programming Language :: Python :: 3.11",
+    "License :: OSI Approved :: MIT License",
+]
+
+dependencies = [
+    "click>=8.1.0",
+    "numpy>=1.24,<2",
+    "matplotlib>=3.7",
+    "rich>=13.0",
+]
+
+[project.optional-dependencies]
+ml = [
+    "torch>=2.0,<2.7",
+    "torchvision",
+    "anomalib==1.1.0",
+    "timm",
+]
+dev = [
+    "pytest>=7.0",
+    "pytest-cov",
+    "ruff",
+    "mypy",
+]
+
+[project.scripts]
+mlsec-scan = "mlsec_scan.cli:cli"
+
+[project.urls]
+Homepage = "https://github.com/Vaks911/mlsec-scan"
+Repository = "https://github.com/Vaks911/mlsec-scan"
+Issues = "https://github.com/Vaks911/mlsec-scan/issues"
+
+[tool.setuptools.packages.find]
+include = ["mlsec_scan*"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "N"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
