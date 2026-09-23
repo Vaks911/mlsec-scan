@@ -154,7 +154,7 @@ def main():
     modules = [
         (0.4, "Adversarial\nPGD / FGSM", C_MODULE_ON, "✓ v0.3"),
         (2.75, "Poisoning\nreference-model", C_MODULE_ON, "✓ v0.3"),
-        (5.10, "Extraction\nчерез API", C_MODULE_OFF, "план"),
+        (5.10, "Extraction\nquery API", C_MODULE_ON, "✓ v0.4"),
         (7.45, "Backdoor\nпоиск триггеров", C_MODULE_OFF, "план"),
     ]
 
@@ -188,7 +188,7 @@ def main():
     box(ax, 1.5, 3.3, 3.0, 0.7, "Console\n(для человека)", C_OUTPUT, fontsize=11)
     box(ax, 5.5, 3.3, 3.0, 0.7, "JSON\n(для CI/CD)", C_OUTPUT, fontsize=11)
 
-    # === Результаты (опционально) ===
+    # === Результаты ===
     arrow(ax, 5.0, 3.3, 5.0, 2.4)
 
     ax.text(
@@ -202,28 +202,41 @@ def main():
         fontweight="bold",
     )
 
+    # Три блока в ряд
     box(
         ax,
-        0.5,
+        0.3,
         1.0,
-        4.2,
+        3.0,
         0.9,
         "Adversarial\nflip rate 78%\nF1: 0.992 → 0.941",
         "#fee2e2",
         C_TEXT,
-        fontsize=10,
+        fontsize=9,
         bold=False,
     )
     box(
         ax,
-        5.3,
+        3.5,
         1.0,
-        4.2,
+        3.0,
         0.9,
-        "Poisoning\n40 из 41 подложенных\nFPR = 0%",
+        "Poisoning\n40 из 41\nFPR = 0%",
         "#dcfce7",
         C_TEXT,
-        fontsize=10,
+        fontsize=9,
+        bold=False,
+    )
+    box(
+        ax,
+        6.7,
+        1.0,
+        3.0,
+        0.9,
+        "Extraction\naccuracy 56%\nresistant",
+        "#dbeafe",
+        C_TEXT,
+        fontsize=9,
         bold=False,
     )
 
@@ -231,7 +244,7 @@ def main():
     ax.text(
         5,
         0.4,
-        "github.com/Vaks911/mlsec-scan  ·  MIT  ·  v0.3.0",
+        "github.com/Vaks911/mlsec-scan  ·  MIT  ·  v0.4.0",
         ha="center",
         va="center",
         fontsize=9,
