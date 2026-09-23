@@ -44,7 +44,9 @@ class ScanConfig:
     poisoning_rates: list = field(default_factory=lambda: [0.01, 0.05, 0.10])
 
     # --- Model Extraction ---
-    extraction_n_queries: int = 1000
+    extraction_n_queries: int = 150
+    extraction_test_size: int = 30
+    extraction_max_epochs: int = 30
 
     # --- Backdoor Detection ---
     backdoor_patch_size: int = 16

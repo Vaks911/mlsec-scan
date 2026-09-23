@@ -58,6 +58,30 @@ Reference-model detection: прогоняет каждый файл из `train/
 - На отравленных (41 подложенный): поймано **40 из 41**, FPR = 0%
 
 ## Формат отчёта
+## Модуль Extraction
+
+Проверяет, можно ли скопировать модель через API.
+
+**Метод:** атакующий делает N запросов к жертве (получает anomaly score), обучает суррогатную CNN на этих парах, затем проверяет agreement на hold-out.
+
+**Результат на PatchCore (58 запросов, 25 hold-out):**
+
+| Метрика | Значение |
+|---|---:|
+| MSE | 0.0579 |
+| MAE | ... |
+| Accuracy (DEFECT/NORMAL) | **56%** |
+| Correlation | ... |
+
+**Вердикт:** `resistant`. PatchCore использует memory bank + k-NN — нелинейная логика не воспроизводится простым суррогатом с малым числом запросов.
+
+**Пороги severity:**
+
+| MSE | Accuracy | Severity |
+|---|---|---|
+| ≤ 0.05 | ≥ 90% | **high** |
+| ≤ 0.10 | ≥ 80% | **medium** |
+| > 0.10 | < 80% | resistant |
 
 ### Console (по умолчанию)
 
@@ -151,7 +175,7 @@ class MyModule(BaseModule):
 - [x] v0.1 — каркас, CLI, модуль Adversarial
 - [x] v0.2 — модуль Data Poisoning
 - [x] v0.3 — JSON-отчёты
-- [ ] v0.4 — Model Extraction
+- [x] v0.4 — Model Extraction
 - [ ] v0.5 — Backdoor Detection
 - [ ] v0.6 — HTML-отчёты
 

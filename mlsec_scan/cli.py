@@ -39,6 +39,7 @@ def list_modules_cmd():
     from mlsec_scan.modules import adversarial  # noqa: F401
     from mlsec_scan.modules import poisoning  # noqa: F401
     from mlsec_scan.core import registry
+    from mlsec_scan.modules import extraction  # noqa: F401
 
     modules = registry.list_modules()
 
@@ -94,7 +95,7 @@ def list_modules_cmd():
 @click.option(
     "--modules",
     default="adversarial",
-    help="Список модулей через запятую. Например: adversarial,poisoning",
+    help="Список модулей через запятую. Например: adversarial,poisoning,extraction",
 )
 @click.option(
     "--output",
@@ -116,6 +117,12 @@ def list_modules_cmd():
     default=0.05,
     help="Epsilon для adversarial атак.",
 )
+@click.option(
+    "--extraction-queries",
+    type=int,
+    default=150,
+    help="Количество запросов к модели для extraction-проверки.",
+)
 @click.option("--verbose", is_flag=True, help="Подробный вывод.")
 def scan(
     model_path,
@@ -127,6 +134,7 @@ def scan(
     output_path,
     output_format,
     eps,
+    extraction_queries,
     verbose,
 ):
     """
@@ -134,6 +142,7 @@ def scan(
     """
     from mlsec_scan.modules import adversarial  # noqa: F401
     from mlsec_scan.modules import poisoning  # noqa: F401
+    from mlsec_scan.modules import extraction  # noqa: F401
     from mlsec_scan.core import Scanner, TestDataset, registry
     from mlsec_scan.core.adapters import PatchCoreAdapter
 
@@ -148,6 +157,7 @@ def scan(
         train_data_path=train_data_path,
         enabled_modules=module_names,
         adversarial_eps=eps,
+        extraction_n_queries=extraction_queries,
         output_path=output_path,
         output_format=output_format,
         verbose=verbose,
