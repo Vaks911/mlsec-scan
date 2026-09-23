@@ -203,6 +203,9 @@ class ExtractionModule(BaseModule):
             "correlation": round(correlation, 4),
             "test_scores_min": round(float(test_scores.min()), 4),
             "test_scores_max": round(float(test_scores.max()), 4),
+            # Реальные предсказания для scatter plot
+            "test_scores": [round(float(s), 4) for s in test_scores],
+            "pred_scores": [round(float(p), 4) for p in pred_test],
         }
 
         # === Severity ===
