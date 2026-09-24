@@ -40,6 +40,7 @@ def list_modules_cmd():
     from mlsec_scan.modules import poisoning  # noqa: F401
     from mlsec_scan.core import registry
     from mlsec_scan.modules import extraction  # noqa: F401
+    from mlsec_scan.modules import backdoor  # noqa: F401
 
     modules = registry.list_modules()
 
@@ -145,6 +146,7 @@ def scan(
     from mlsec_scan.modules import extraction  # noqa: F401
     from mlsec_scan.core import Scanner, TestDataset, registry
     from mlsec_scan.core.adapters import PatchCoreAdapter
+    from mlsec_scan.modules import backdoor  # noqa: F401
 
     console.print("[bold cyan]mlsec-scan[/bold cyan] — запуск сканирования\n")
 

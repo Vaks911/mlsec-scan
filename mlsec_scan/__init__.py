@@ -5,7 +5,7 @@ mlsec-scan — security scanner for machine learning models.
 extraction и backdoor атакам.
 """
 
-__version__ = "0.4.0"
+__version__ = "0.5.0"
 __author__ = "Maksim Nagaytsev"
 __license__ = "MIT"
 

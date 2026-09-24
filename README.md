@@ -1,4 +1,5 @@
 # mlsec-scan
+
 ![mlsec-scan architecture](docs/mlsec-scan-schema.png)
 
 Security scanner for machine learning models.
@@ -6,8 +7,8 @@ Security scanner for machine learning models.
 Проверяет устойчивость ML-модели к четырём классам атак:
 - **Adversarial** — FGSM / PGD атаки на входные данные
 - **Data Poisoning** — отравление обучающей выборки
-- **Model Extraction** — кража модели через API *(в разработке)*
-- **Backdoor Detection** — поиск скрытых триггеров *(в разработке)*
+- **Model Extraction** — кража модели через API
+- **Backdoor Detection** — поиск скрытых триггеров
 
 ## Установка
 
@@ -26,7 +27,7 @@ mlsec-scan scan \
     --detector-path path/to/defect-detection \
     --data path/to/test_data \
     --train-data path/to/train/good \
-    --modules adversarial,poisoning \
+    --modules adversarial,poisoning,extraction,backdoor \
     --format json \
     --output reports/report.json
 ```
@@ -38,6 +39,8 @@ mlsec-scan scan \
 | `mlsec-scan scan` | Запустить сканирование модели |
 | `mlsec-scan list-modules` | Показать доступные модули |
 | `mlsec-scan version` | Показать версию |
+
+---
 
 ## Модули
 
@@ -57,34 +60,63 @@ Reference-model detection: прогоняет каждый файл из `train/
 - На чистых данных: **0 ложных срабатываний** из 209
 - На отравленных (41 подложенный): поймано **40 из 41**, FPR = 0%
 
-## Формат отчёта
-## Модуль Extraction
+### Extraction
 
 Проверяет, можно ли скопировать модель через API.
 
-**Метод:** атакующий делает N запросов к жертве (получает anomaly score), обучает суррогатную CNN на этих парах, затем проверяет agreement на hold-out.
+**Метод:** атакующий делает N запросов к жертве, обучает суррогатную CNN на полученных парах, затем проверяет agreement на hold-out.
 
 **Результат на PatchCore (58 запросов, 25 hold-out):**
 
 | Метрика | Значение |
 |---|---:|
 | MSE | 0.0579 |
-| MAE | ... |
 | Accuracy (DEFECT/NORMAL) | **56%** |
-| Correlation | ... |
+| Вердикт | `resistant` |
+
 ![Extraction — scatter plot](docs/extraction-plot.png)
 
-*Каждая точка — один hold-out пример. По горизонтали — score жертвы, по вертикали — предсказание суррогата. Зелёные — совпадение, красные — ошибки. Точки не тянутся к диагонали, значит суррогат не воспроизводит поведение жертвы.*
-
-**Вердикт:** `resistant`. PatchCore использует memory bank + k-NN — нелинейная логика не воспроизводится простым суррогатом с малым числом запросов.
+*Каждая точка — один hold-out пример. Точки не тянутся к диагонали — суррогат не воспроизводит поведение жертвы.*
 
 **Пороги severity:**
 
 | MSE | Accuracy | Severity |
 |---|---|---|
-| ≤ 0.05 | ≥ 90% | **high** |
-| ≤ 0.10 | ≥ 80% | **medium** |
+| ≤ 0.05 | ≥ 90% | high |
+| ≤ 0.10 | ≥ 80% | medium |
 | > 0.10 | < 80% | resistant |
+
+### Backdoor Detection
+
+Проверяет модель на наличие скрытого триггера.
+
+**Метод:** анализ разделимости классов. Backdoored-модель обучалась на дефектах с триггером под меткой «норма». Memory bank размылся, и anomaly score нормы и дефектов сблизились.
+
+**Метрика:** `gap = mean_score(defect) − mean_score(normal)`.
+
+| Модель | mean(normal) | mean(defect) | Gap | Вердикт |
+|---|---:|---:|---:|---|
+| Чистая (v3) | 0.305 | 0.767 | **+0.462** | `resistant` |
+| Backdoored | 0.593 | 0.548 | **−0.044** | `vulnerable high` |
+
+![Backdoor detection](docs/backdoor-scan.png)
+
+*Слева: чистая модель — нормы и дефекты хорошо разделены. Справа: backdoored — gap отрицательный.*
+
+**Ключевое наблюдение:** у заражённой модели gap **отрицательный**. Она считает дефекты более нормальными, чем сами нормы. Это специфичный признак backdoor-атаки.
+
+**Пороги severity:**
+
+| Gap | Severity |
+|---|---|
+| < 0.15 | high (infected) |
+| < 0.25 | medium |
+| < 0.35 | low |
+| ≥ 0.35 | resistant |
+
+---
+
+## Формат отчёта
 
 ### Console (по умолчанию)
 
@@ -109,10 +141,10 @@ ADVERSARIAL  vulnerable  (222.72s)
 ```json
 {
   "tool": "mlsec-scan",
-  "version": "0.1.0",
+  "version": "0.5.0",
   "model": "PatchCore (WideResNet50)",
   "summary": {
-    "modules_run": 2,
+    "modules_run": 4,
     "critical": 0,
     "high": 1
   },
@@ -127,27 +159,31 @@ ADVERSARIAL  vulnerable  (222.72s)
 }
 ```
 
+---
+
 ## Архитектура
 
 ```
 mlsec_scan/
-├── cli.py                   # CLI на click
-├── config.py                # ScanConfig
+├── cli.py                    # CLI на click
+├── config.py                 # ScanConfig
 ├── core/
-│   ├── model_adapter.py     # Абстрактный интерфейс модели
-│   ├── dataset.py           # TestDataset
-│   ├── scanner.py           # Оркестратор
-│   ├── registry.py          # Реестр модулей
+│   ├── model_adapter.py      # Абстрактный интерфейс модели
+│   ├── dataset.py            # TestDataset
+│   ├── scanner.py            # Оркестратор
+│   ├── registry.py           # Реестр модулей
 │   └── adapters/
-│       └── patchcore.py     # PatchCoreAdapter
+│       └── patchcore.py      # PatchCoreAdapter
 ├── modules/
-│   ├── base.py              # BaseModule
-│   ├── adversarial.py       # Adversarial module
-│   └── poisoning.py         # Poisoning module
+│   ├── base.py               # BaseModule
+│   ├── adversarial.py        # Adversarial module
+│   ├── poisoning.py          # Poisoning module
+│   ├── extraction.py         # Extraction module
+│   └── backdoor.py           # Backdoor module
 ├── report/
-│   └── json.py              # JSON-генератор
+│   └── json.py               # JSON-генератор
 └── utils/
-    └── metrics.py           # F1, precision, recall
+    └── metrics.py            # F1, precision, recall
 ```
 
 ## Как добавить свой модуль
@@ -173,13 +209,15 @@ class MyModule(BaseModule):
         return result
 ```
 
+---
+
 ## Статус проекта
 
 - [x] v0.1 — каркас, CLI, модуль Adversarial
 - [x] v0.2 — модуль Data Poisoning
 - [x] v0.3 — JSON-отчёты
 - [x] v0.4 — Model Extraction
-- [ ] v0.5 — Backdoor Detection
+- [x] v0.5 — Backdoor Detection
 - [ ] v0.6 — HTML-отчёты
 
 ## Лицензия
