@@ -273,10 +273,9 @@ def _save_report_if_needed(report, config):
 
         write_json_report(report, config.output_path)
     elif config.output_format == "html":
-        console.print(
-            "[yellow]HTML-формат пока не реализован. "
-            "Используйте --format json или console.[/yellow]"
-        )
+        from mlsec_scan.report.html import write_html_report
+
+        write_html_report(report, config.output_path)
     # console — печатается всегда выше, файл не нужен
 
 

@@ -116,7 +116,15 @@ Reference-model detection: прогоняет каждый файл из `train/
 
 ---
 
-## Формат отчёта
+## Форматы отчётов
+
+Три формата, выбираются флагом `--format`:
+
+| Формат | Для кого | Что даёт |
+|---|---|---|
+| `console` | Разработчик в терминале | Цветной вывод в stdout |
+| `json` | CI/CD, автоматизация | Машиночитаемый файл |
+| `html` | Отчёт для коллег, тикетов | Self-contained HTML, открывается в браузере |
 
 ### Console (по умолчанию)
 
@@ -141,7 +149,7 @@ ADVERSARIAL  vulnerable  (222.72s)
 ```json
 {
   "tool": "mlsec-scan",
-  "version": "0.5.0",
+  "version": "0.6.0",
   "model": "PatchCore (WideResNet50)",
   "summary": {
     "modules_run": 4,
@@ -158,6 +166,23 @@ ADVERSARIAL  vulnerable  (222.72s)
   ]
 }
 ```
+
+### HTML
+
+Один self-contained файл. Внутри — шапка, сводка карточек, каждый модуль отдельным блоком с findings и рекомендациями.
+
+```bash
+mlsec-scan scan \
+    --model model.ckpt \
+    --model-type patchcore \
+    --detector-path path/to/defect-detection \
+    --data path/to/test_data \
+    --modules adversarial,backdoor \
+    --format html \
+    --output reports/report.html
+```
+
+Открывается двойным кликом в любом браузере.
 
 ---
 
@@ -181,7 +206,8 @@ mlsec_scan/
 │   ├── extraction.py         # Extraction module
 │   └── backdoor.py           # Backdoor module
 ├── report/
-│   └── json.py               # JSON-генератор
+│   ├── json.py               # JSON-генератор
+│   └── html.py               # HTML-генератор (Jinja2)
 └── utils/
     └── metrics.py            # F1, precision, recall
 ```
@@ -218,7 +244,7 @@ class MyModule(BaseModule):
 - [x] v0.3 — JSON-отчёты
 - [x] v0.4 — Model Extraction
 - [x] v0.5 — Backdoor Detection
-- [ ] v0.6 — HTML-отчёты
+- [x] v0.6 — HTML-отчёты
 
 ## Лицензия
 

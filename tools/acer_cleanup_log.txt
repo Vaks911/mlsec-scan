@@ -1,0 +1,30 @@
+=== Acer bloatware cleanup === 09/25/2026 01:51:08
+[01:51:08] === 1. Disabling scheduled tasks ===
+[01:51:09]   DISABLED: \ACCBackgroundApplication
+[01:51:10]   DISABLED: \Quick Access
+[01:51:11]   DISABLED: \UbtFrameworkService
+[01:51:11]   DISABLED: \UEIPInvitation
+[01:51:12]   DISABLED: \Oem\AcerJumpstartTask
+[01:51:12] === 2. Acer services ===
+[01:51:12]   ACCSvc -> Stopped (Startup: Disabled)
+[01:51:12] === 3. Uninstalling Acer MSI programs ===
+[01:51:12]   Removing Care Center Service ...
+[01:51:21]     exit code: 0 (0 = ok, 1605 = already absent)
+[01:51:21]   Removing User Experience Improvement Program Service ...
+[01:51:27]     exit code: 0 (0 = ok, 1605 = already absent)
+[01:51:27]   Removing Acer Jumpstart ...
+[01:51:28]     exit code: 0 (0 = ok, 1605 = already absent)
+[01:51:28]   Removing Acer Configuration Manager ...
+[01:51:29]     exit code: 0 (0 = ok, 1605 = already absent)
+[01:51:29] === 4. Leftover processes ===
+[01:51:29] === 5. Verification ===
+[01:51:29] -- Processes:
+[01:51:29]     (no Acer processes)
+[01:51:29] -- Services:
+[01:51:29]     QALSvc: Stopped / Manual
+[01:51:29]     RemoteAccess: Stopped / Disabled
+[01:51:29]     SharedAccess: Running / Manual
+[01:51:29] -- Installed Acer programs:
+[01:51:30]      DriverSetupUtility
+[01:51:30]     Quick Access Service
+[01:51:30] === DONE. Quick Access (Fn keys) was NOT touched. ===
