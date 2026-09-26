@@ -152,10 +152,10 @@ def main():
     )
 
     modules = [
-        (0.4, "Adversarial\nPGD / FGSM", C_MODULE_ON, "✓ v0.3"),
-        (2.75, "Poisoning\nreference-model", C_MODULE_ON, "✓ v0.3"),
+        (0.4, "Adversarial\nPGD / FGSM", C_MODULE_ON, "✓ v0.1"),
+        (2.75, "Poisoning\nreference-model", C_MODULE_ON, "✓ v0.2"),
         (5.10, "Extraction\nquery API", C_MODULE_ON, "✓ v0.4"),
-        (7.45, "Backdoor\nпоиск триггеров", C_MODULE_OFF, "план"),
+        (7.45, "Backdoor\nпоиск триггеров", C_MODULE_ON, "✓ v0.5"),
     ]
 
     for x, label, color, status in modules:
@@ -185,8 +185,9 @@ def main():
         fontweight="bold",
     )
 
-    box(ax, 1.5, 3.3, 3.0, 0.7, "Console\n(для человека)", C_OUTPUT, fontsize=11)
-    box(ax, 5.5, 3.3, 3.0, 0.7, "JSON\n(для CI/CD)", C_OUTPUT, fontsize=11)
+    box(ax, 0.5, 3.3, 2.8, 0.7, "Console\n(терминал)", C_OUTPUT, fontsize=10)
+    box(ax, 3.6, 3.3, 2.8, 0.7, "JSON\n(CI/CD)", C_OUTPUT, fontsize=10)
+    box(ax, 6.7, 3.3, 2.8, 0.7, "HTML\n(браузер)", C_OUTPUT, fontsize=10)
 
     # === Результаты ===
     arrow(ax, 5.0, 3.3, 5.0, 2.4)
@@ -244,7 +245,7 @@ def main():
     ax.text(
         5,
         0.4,
-        "github.com/Vaks911/mlsec-scan  ·  MIT  ·  v0.4.0",
+        "github.com/Vaks911/mlsec-scan  ·  MIT  ·  v1.0.0",
         ha="center",
         va="center",
         fontsize=9,
